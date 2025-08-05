@@ -1,15 +1,23 @@
 document.getElementById("getToday").addEventListener("click", function () {
-fetch("https://api.aladhan.com/v1/timingsByCity?city=Krakow&country=Poland&method=2")
+  let day = document.getElementById("day").value;
+  let month = document.getElementById("month").value;
+  let year = document.getElementById("year").value;
+
+  if (!day || !month || !year) return alert("Tarix daxil et");
+
+  fetch(`https://api.aladhan.com/v1/calendar/${year}/${month}?latitude=50.0647&longitude=19.9450&method=2`)
     .then(res => res.json())
     .then(data => {
-      let output = "";
-      let timings = data.data.timings;
-      for (let key in timings) {
-        output += `<p>${key}: ${timings[key]}</p>`;
-      }
-      document.getElementById("result").innerHTML = output;
-    })
-    .catch(err => console.log("Xeta:", err));
+      let timings = data.data[day - 1].timings;
+      document.getElementById("result").innerHTML = `
+        <h3>${day}.${month}.${year} tarixi ucun vaxtlar:</h3>
+        <p>Fajr: ${timings.Fajr}</p>
+        <p>Dhuhr: ${timings.Dhuhr}</p>
+        <p>Asr: ${timings.Asr}</p>
+        <p>Maghrib: ${timings.Maghrib}</p>
+        <p>Isha: ${timings.Isha}</p>
+      `;
+    });
 });
 
 document.getElementById("getMonth").addEventListener("click", function () {
